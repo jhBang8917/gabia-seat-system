@@ -30,6 +30,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
     runtimeOnly('mysql:mysql-connector-java')
     compileOnly('org.projectlombok:lombok')
+    compileOnly('javax.xml.bind:jaxb-api:2.3.0')
     compileOnly('org.springframework.boot:spring-boot-starter-jdbc')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
