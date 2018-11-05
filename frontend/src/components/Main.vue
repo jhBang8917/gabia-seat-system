@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import mapImage from '../assets/Asset 20.svg'
+import mapImage from '../assets/F5.svg'
 export default {
   name: 'Main',
   data () {
@@ -30,7 +30,7 @@ export default {
       crs: L.CRS.Simple
     })
 
-    const w = 4000
+    const w = 6000
     const h = 2500
     const southWest = this.map.unproject([0, h], this.map.getMaxZoom() - 1)
     const northEast = this.map.unproject([w, 0], this.map.getMaxZoom() - 1)
