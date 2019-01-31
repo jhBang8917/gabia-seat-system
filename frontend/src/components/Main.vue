@@ -40,6 +40,11 @@ export default {
       mapImage, bounds
     )
     this.imageOverlay.addTo(this.map)
+
+    L.circle([-99.762, 349.24], {color: 'green', radius: 4}).addTo(this.map)
+      // .bindTooltip('iwatsuki', {permanent: true, direction: 'center'}).openTooltip()
+      .bindPopup('iwatsuki <br />IT Support Department')
+
     this.map.setMaxBounds(bounds)
   }
 }
