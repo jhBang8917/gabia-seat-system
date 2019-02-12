@@ -10,9 +10,15 @@ import lombok.Setter;
 public class SeatsRequestDto {
     private String location;
 
+    private String userId;
+
+    private String userName;
+
     public Seats toEntity() {
         return Seats.builder()
                 .location(location)
+                .userId(userId)
+                .userName(userName)
                 .build();
     }
 }
