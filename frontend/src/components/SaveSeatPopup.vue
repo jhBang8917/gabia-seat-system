@@ -1,6 +1,16 @@
 <template>
   <v-layout justify-center column ma-3>
-    <v-autocomplete
+    <v-flex>
+      <v-text-field
+        v-model="userId"
+        label="userId">
+      </v-text-field>
+      <v-text-field
+        v-model="userName"
+        label="userName">
+      </v-text-field>
+    </v-flex>
+    <!--<v-autocomplete
       v-model="selectItem"
       :items="items"
       :search-input.sync="search"
@@ -25,7 +35,7 @@
       >
         <v-list-tile-avatar
           color="indigo"
-          class="headline font-weight-light white--text"
+          class="headline font-weight-light white&#45;&#45;text"
         >
           {{ item.name.charAt(0) }}
         </v-list-tile-avatar>
@@ -37,7 +47,7 @@
           <v-icon>mdi-coin</v-icon>
         </v-list-tile-action>
       </template>
-    </v-autocomplete>
+    </v-autocomplete>-->
     <v-btn block color="secondary" dark @click="saveSeat">save</v-btn>
   </v-layout>
 </template>
@@ -55,7 +65,9 @@ export default {
   data () {
     return {
       search: '',
-      selectItem: null
+      selectItem: null,
+      userName: '',
+      userId: ''
     }
   },
   watch: {
@@ -66,7 +78,8 @@ export default {
   },
   methods: {
     saveSeat: function () {
-      this.$eventBus.$emit('saveSeatEvent', this.selectItem)
+      /* this.$eventBus.$emit('saveSeatEvent', this.selectItem) */
+      this.$eventBus.$emit('saveSeatEvent', {'userId': this.userId, 'userName': this.userName})
     }
   }
 

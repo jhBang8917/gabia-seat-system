@@ -5,8 +5,8 @@
 <script>
 import Vue from 'vue'
 import mapImage from '../assets/floor5_2.svg'
-/* import SaveSeatPopup from './SaveSeatPopup' */
-import SeatInfoPopup from './SeatInfoPopup'
+import SaveSeatPopup from './SaveSeatPopup'
+/* import SeatInfoPopup from './SeatInfoPopup' */
 export default {
   name: 'Main',
   data () {
@@ -16,7 +16,8 @@ export default {
       layers: [],
       mapImage: mapImage,
       searchItems: [],
-      searchStr: ''
+      searchStr: '',
+      location: ''
     }
   },
   methods: {
@@ -24,12 +25,24 @@ export default {
       console.log(val)
     },
     saveSeat: function (item) {
-      console.log('searchUser')
+      let data = {'location': this.location, 'userId': item.userId, 'userName': item.userName}
+      this.occupiedSeat(data)
+      /* this.$http.post('/api/seats', data)
+        .then((res) => {
+          this.occupiedSeat(data)
+        })
+      console.log('searchUser') */
     },
-    OccupiedSeat: function (data) {
-      const L = window['L']
-      L.circle([-77.7, 55.2], {color: 'green', radius: 5})
-        .addTo(this.map).bindTooltip('Name B', {permanent: true, direction: 'center'}).openTooltip().bindPopup('iwatsuki <br />IT Support Department')
+    occupiedSeat: function (data) {
+      window['L'].circle([data.location.lat, data.location.lng], {color: 'green', radius: 5})
+        .addTo(this.map).bindTooltip(data.userName, {permanent: true, direction: 'center'}).openTooltip()
+        .bindPopup(data.userId + '<br/>' + data.userName)
+    },
+    getLocation: function () {
+      this.$http.get('/api/seats')
+        .then((res) => {
+          this.occupiedSeat(res.data)
+        })
     }
   },
   computed: {
@@ -57,25 +70,20 @@ export default {
     this.imageOverlay = L.imageOverlay(
       mapImage, bounds
     )
-    const overlay = this.imageOverlay.addTo(this.map)
+    this.imageOverlay.addTo(this.map)
     this.map.setMaxBounds(bounds)
-    let popup = L.popup({minWidth: 300})
     this.map.on('click', (e) => {
-      console.log(e)
-      let ComponentClass = Vue.extend(SeatInfoPopup)
-      let instance = new ComponentClass()
-      /*
+      let popup = L.popup({minWidth: 300})
+      this.location = e.latlng
       let ComponentClass = Vue.extend(SaveSeatPopup)
       let instance = new ComponentClass({propsData: {items: this.searchItems}})
-      */
       instance.$mount()
       popup
         .setLatLng(e.latlng)
         .setContent(instance.$el)
         .openOn(this.map)
     })
-    this.OccupiedSeat()
-    console.log(overlay)
+    // this.getLocation()
   }
 }
 </script>
