@@ -1,11 +1,12 @@
 <template>
-  <div id="map">
-
-  </div>
+  <v-layout id="map"/>
 </template>
 
 <script>
-import mapImage from '../assets/F5.svg'
+import Vue from 'vue'
+import mapImage from '../assets/floor5_2.svg'
+import SaveSeatPopup from './SaveSeatPopup'
+/* import SeatInfoPopup from './SeatInfoPopup' */
 export default {
   name: 'Main',
   data () {
@@ -13,12 +14,42 @@ export default {
       map: null,
       imageOverlay: null,
       layers: [],
-      mapImage: mapImage
+      mapImage: mapImage,
+      searchItems: [],
+      searchStr: '',
+      location: ''
+    }
+  },
+  methods: {
+    searchUser: function (val) {
+      console.log(val)
+    },
+    saveSeat: function (item) {
+      let data = {'location': this.location, 'userId': item.userId, 'userName': item.userName}
+      this.occupiedSeat(data)
+      /* this.$http.post('/api/seats', data)
+        .then((res) => {
+          this.occupiedSeat(data)
+        })
+      console.log('searchUser') */
+    },
+    occupiedSeat: function (data) {
+      window['L'].circle([data.location.lat, data.location.lng], {color: 'green', radius: 5})
+        .addTo(this.map).bindTooltip(data.userName, {permanent: true, direction: 'center'}).openTooltip()
+        .bindPopup(data.userId + '<br/>' + data.userName)
+    },
+    getLocation: function () {
+      this.$http.get('/api/seats')
+        .then((res) => {
+          this.occupiedSeat(res.data)
+        })
     }
   },
   computed: {
   },
   created () {
+    this.$eventBus.$on('searchUser', this.searchUser)
+    this.$eventBus.$on('saveSeatEvent', this.saveSeat)
   },
   mounted () {
     const L = window['L']
@@ -40,12 +71,19 @@ export default {
       mapImage, bounds
     )
     this.imageOverlay.addTo(this.map)
-
-    L.circle([-99.762, 349.24], {color: 'green', radius: 4}).addTo(this.map)
-      // .bindTooltip('iwatsuki', {permanent: true, direction: 'center'}).openTooltip()
-      .bindPopup('iwatsuki <br />IT Support Department')
-
     this.map.setMaxBounds(bounds)
+    this.map.on('click', (e) => {
+      let popup = L.popup({minWidth: 300})
+      this.location = e.latlng
+      let ComponentClass = Vue.extend(SaveSeatPopup)
+      let instance = new ComponentClass({propsData: {items: this.searchItems}})
+      instance.$mount()
+      popup
+        .setLatLng(e.latlng)
+        .setContent(instance.$el)
+        .openOn(this.map)
+    })
+    // this.getLocation()
   }
 }
 </script>
@@ -53,6 +91,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #map {
+    z-index: 100;
     height: 600px;
     background-color: white;
   }

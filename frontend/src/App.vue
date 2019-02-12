@@ -1,10 +1,14 @@
 <template>
-  <div id="app">
+  <v-app>
     <div>
       <img src="./assets/Search.png" class="gnb">
     </div>
-    <router-view/>
-  </div>
+    <v-content>
+      <v-container fluid>
+      <router-view/>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
@@ -14,13 +18,6 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 .gnb {
   width: 150%;
   height: 100px
